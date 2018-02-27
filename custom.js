@@ -1,7 +1,15 @@
-var worker = new Worker('fetch.js');
+const CONCURRENT_REQUESTS = 3;
+let fetchWorkers = [];
 
-worker.addEventListener('message', function(e) {
-  console.log('Worker said: ', e.data);
-}, false);
+for (var i = 0; i < CONCURRENT_REQUESTS; i++) {
+  fetchWorkers[i] = new Worker("fetch.js");
+  fetchWorkers[i].addEventListener(
+    "message",
+    function(e) {
+      console.log("Worker said: ", e.data);
+    },
+    false
+  );
 
-worker.postMessage('Hello World'); // Send data to our worker.
+  fetchWorkers[i].postMessage(""); // Send data to our worker.
+}
